@@ -1,58 +1,208 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Surabaya Prestige Motors
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Website **Luxury Rent Car & Motorsport** di Surabaya dengan tema **Black and Gold**. Pengguna dapat melihat katalog kendaraan mewah, melakukan booking, dan memberi testimoni. Admin mengelola kendaraan dan booking lewat panel khusus yang tersembunyi di balik login.
 
-## About Laravel
+Proyek ini dibuat untuk Ujian Akhir Semester mata kuliah Pemrograman Web.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Fitur
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+**Autentikasi**
+- Register, login, dan logout
+- Dua role: `admin` dan `customer`
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+**Pengunjung dan customer**
+1. Halaman beranda (hero, statistik, mobil unggulan, testimoni)
+2. Katalog kendaraan
+3. Filter kategori, pencarian, dan pengurutan harga
+4. Halaman detail kendaraan
+5. Booking kendaraan dengan perhitungan total harga otomatis dan pengecekan bentrok tanggal
+6. Riwayat booking dan pembatalan booking (status `pending`)
+7. Testimoni dan rating
 
-## Learning Laravel
+**Admin** (hanya dapat diakses role `admin`)
+8. Dashboard statistik (total armada, tersedia, customer, booking pending, pendapatan)
+9. CRUD kendaraan dengan upload gambar lokal
+10. Manajemen booking: filter dan ubah status (`pending`, `approved`, `completed`, `cancelled`)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Teknologi
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+| Komponen | Keterangan |
+| --- | --- |
+| Framework | Laravel 11/12 (PHP 8.2+) |
+| Database | MySQL / MariaDB (XAMPP) |
+| Frontend | Blade, Tailwind CSS (CDN), Alpine.js (CDN) |
+| Font | Syne, Outfit, JetBrains Mono |
+| Penyimpanan gambar | Laravel Storage, disk `public` |
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## Struktur Database
 
-## Agentic Development
+| Tabel | Kolom utama |
+| --- | --- |
+| `users` | id, name, email, password, role (`admin`/`customer`), timestamps |
+| `cars` | id, name, brand, category, price_per_day, hp, top_speed, status (`available`/`rented`), image, timestamps |
+| `bookings` | id, user_id, car_id, start_date, end_date, total_price, status, timestamps |
+| `testimonials` | id, user_name, comment, rating, timestamps |
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+Relasi (Foreign Key):
+- `bookings.user_id` mengacu ke `users.id`
+- `bookings.car_id` mengacu ke `cars.id`
 
-```bash
-composer require laravel/boost --dev
+Kategori kendaraan: `Supercar`, `Luxury Sedan`, `Motorsport`, `SUV`.
 
-php artisan boost:install
+## Cara Menjalankan
+
+### Prasyarat
+- PHP 8.2 atau lebih baru
+- Composer
+- XAMPP (Apache dan MySQL menyala), atau MySQL/MariaDB lain
+
+### Langkah instalasi
+
+1. Clone repository dan masuk ke foldernya:
+
+```
+git clone https://github.com/USERNAME/NAMA-REPOSITORY.git
+cd NAMA-REPOSITORY
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+2. Pasang dependensi:
 
-## Contributing
+```
+composer install
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+3. Salin file environment dan buat application key:
 
-## Code of Conduct
+```
+copy .env.example .env
+php artisan key:generate
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Di Linux atau macOS, gunakan `cp .env.example .env`.
 
-## Security Vulnerabilities
+4. Buat database kosong bernama `luxury_rent_car` lewat phpMyAdmin (collation `utf8mb4_unicode_ci`).
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+5. Atur koneksi database di file `.env`:
 
-## License
+```
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=luxury_rent_car
+DB_USERNAME=root
+DB_PASSWORD=
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+SESSION_DRIVER=database
+```
+
+6. Buat tabel dan data awal:
+
+```
+php artisan migrate --seed
+```
+
+7. Buat symbolic link agar gambar yang diupload dapat diakses browser (lokasi file: `storage/app/public/cars`, diakses lewat `public/storage/cars`):
+
+```
+php artisan storage:link
+```
+
+8. Jalankan server:
+
+```
+php artisan serve
+```
+
+Buka `http://127.0.0.1:8000`.
+
+> Tailwind CSS dan Alpine.js dimuat lewat CDN, sehingga komputer harus terhubung ke internet.
+
+## Akun Demo
+
+Akun dibuat oleh seeder di `database/seeders/DatabaseSeeder.php`.
+
+| Role | Email | Password |
+| --- | --- | --- |
+| Admin | `admin@prestige.test` | `admin12345` |
+| Customer | `customer@prestige.test` | `customer12345` |
+
+Ganti kredensial ini sebelum proyek dipakai di luar keperluan demo.
+
+## Halaman Admin
+
+Halaman admin tidak ditampilkan di navigasi publik. Admin masuk lewat halaman `/login` yang sama, lalu diarahkan ke dashboard.
+
+| URL | Fungsi |
+| --- | --- |
+| `/admin/dashboard` | Dashboard statistik |
+| `/admin/cars` | Daftar kendaraan dan CRUD |
+| `/admin/bookings` | Manajemen booking |
+
+Semua rute `/admin/*` dilindungi middleware `auth` dan `admin`. Pengguna yang bukan admin akan menerima respons 404, sehingga keberadaan halaman admin tidak terlihat.
+
+## Penyimpanan Gambar
+
+- Gambar diupload lewat form admin, divalidasi sebagai gambar (jpeg, png, jpg, webp) maksimal 2 MB.
+- File disimpan di `storage/app/public/cars` dengan nama acak, dan path-nya disimpan di kolom `cars.image`.
+- Saat gambar diganti atau kendaraan dihapus, file lama ikut dihapus dari penyimpanan lokal.
+
+## Struktur Folder Penting
+
+```
+app/
+  Http/
+    Controllers/
+      Admin/            AdminController, CarController, BookingController
+      AuthController.php
+      CatalogController.php
+      BookingController.php
+      TestimonialController.php
+    Middleware/AdminMiddleware.php
+  Models/               User, Car, Booking, Testimonial
+bootstrap/app.php       alias middleware admin
+database/
+  migrations/
+  seeders/DatabaseSeeder.php
+resources/views/
+  layouts/              app, admin
+  partials/             head, flash, car-card, testimonial-card
+  auth/  fleet/  bookings/  testimonials/  admin/
+routes/web.php
+```
+
+## Rute Utama
+
+| Method | URL | Keterangan |
+| --- | --- | --- |
+| GET | `/` | Beranda |
+| GET | `/fleet` | Katalog |
+| GET | `/fleet/{car}` | Detail kendaraan |
+| POST | `/fleet/{car}/book` | Buat booking (login) |
+| GET | `/my-bookings` | Riwayat booking (login) |
+| PATCH | `/my-bookings/{booking}/cancel` | Batalkan booking (login) |
+| GET/POST | `/testimonials` | Lihat dan kirim testimoni |
+| GET/POST | `/login`, `/register` | Autentikasi |
+| POST | `/logout` | Logout |
+| GET | `/admin/dashboard` | Dashboard admin |
+| RESOURCE | `/admin/cars` | CRUD kendaraan |
+| GET | `/admin/bookings` | Daftar booking |
+| PATCH | `/admin/bookings/{id}` | Ubah status booking |
+
+## Aturan Booking
+
+- Total harga dihitung dari jumlah hari (tanggal mulai sampai tanggal selesai, inklusif) dikali harga per hari.
+- Booking ditolak jika kendaraan berstatus `rented` atau tanggalnya bentrok dengan booking `pending`/`approved`.
+- Saat admin menyetujui booking (`approved`), status kendaraan menjadi `rented`. Saat `completed` atau `cancelled`, status kembali `available`.
+
+## Pemecahan Masalah
+
+| Masalah | Solusi |
+| --- | --- |
+| Gambar tidak tampil setelah upload | Jalankan `php artisan storage:link`; di Windows, jalankan terminal sebagai administrator jika gagal |
+| Perubahan `.env` tidak terbaca | Jalankan `php artisan config:clear` |
+| Error `Table 'users' already exists` | Pastikan hanya ada satu migration yang membuat tabel `users`, lalu jalankan `php artisan migrate:fresh --seed` |
+| Tampilan berantakan atau modal tidak terbuka | Periksa koneksi internet (Tailwind dan Alpine dimuat lewat CDN) |
+
+## Lisensi
+
+Proyek ini dibuat untuk keperluan akademik.
